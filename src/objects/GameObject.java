@@ -20,6 +20,6 @@ public abstract class GameObject {
     public abstract void draw(Graphics g);
 
     public boolean inCollision(GameObject object) {
-        return false;
+        return this.x == object.x && this.y == object.y;
     }
 }

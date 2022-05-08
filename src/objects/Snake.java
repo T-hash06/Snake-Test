@@ -7,27 +7,70 @@ public final class Snake extends GameObject {
         RIGHT, LEFT, UP, DOWN;
     }
 
+    private final boolean isHead;
     private Direction direction;
+    private Snake tail;
 
     public Snake(int x, int y, Color color) {
         super(x, y, color);
 
         this.direction = Direction.RIGHT;
+        this.isHead = true;
+    }
+
+    public Snake(boolean isHead, int x, int y, Color color) {
+        super(x, y, color);
+
+        this.direction = Direction.RIGHT;
+        this.isHead = false;
     }
 
     @Override
     public void tick() {
-        if (this.direction == Direction.RIGHT) this.x += this.width;
-        if (this.direction == Direction.LEFT) this.x -= this.width;
-        if (this.direction == Direction.DOWN) this.y += this.height;
-        if (this.direction == Direction.UP) this.y -= this.height;
+        int lastX = this.x;
+        int lastY = this.y;
+
+        if (this.isHead) {
+            if (this.direction == Direction.RIGHT) {
+                this.x += this.width;
+            }
+            if (this.direction == Direction.LEFT) {
+                this.x -= this.width;
+            }
+            if (this.direction == Direction.DOWN) {
+                this.y += this.height;
+            }
+            if (this.direction == Direction.UP) {
+                this.y -= this.height;
+            }
+        }
+
+        if (this.tail != null) {
+            this.tail.tick(lastX, lastY);
+        }
     }
+
+    private void tick(int x, int y) {
+        int lastX = this.x;
+        int lastY = this.y;
+
+        this.x = x;
+        this.y = y;
+
+        if (this.tail != null) {
+            this.tail.tick(lastX, lastY);
+        }
+    }
+
 
     @Override
     public void draw(Graphics g) {
         g.setColor(this.color);
 
         g.fillRect(this.x, this.y, this.width, this.height);
+
+        if (this.tail != null)
+            tail.draw(g);
     }
 
     public Direction getDirection() {
@@ -36,5 +79,13 @@ public final class Snake extends GameObject {
 
     public void setDirection(Direction direction) {
         this.direction = direction;
+    }
+
+    public void growTail() {
+        if (this.tail == null) {
+            this.tail = new Snake(false, this.x, this.y, this.color);
+        } else {
+            this.tail.growTail();
+        }
     }
 }

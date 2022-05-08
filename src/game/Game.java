@@ -3,6 +3,7 @@ package game;
 import control.Keyboard;
 import graphics.Helper;
 import graphics.Window;
+import objects.Food;
 import objects.GameObject;
 import objects.Snake;
 
@@ -13,6 +14,7 @@ public class Game implements Runnable {
 
     private final int WIDTH = 600;
     private final int HEIGHT = 600;
+    private final int CELLS_COUNT = WIDTH / GameObject.STANDARD_SIZE;
     private final String TITLE = "My Game";
 
     private int currentTPS = 0;
@@ -25,13 +27,15 @@ public class Game implements Runnable {
 
     private final Keyboard keyboard;
     private final Snake snake;
+    private final Food food;
 
     public Game() {
         this.window = new Window(WIDTH, HEIGHT, TITLE);
         this.keyboard = new Keyboard();
-        this.snake = new Snake(0, 0, Color.red);
 
         this.window.getFrame().addKeyListener(keyboard);
+        this.snake = new Snake(0, 0, Color.red);
+        this.food = new Food(CELLS_COUNT, Color.green);
     }
 
     public void start() {
@@ -102,6 +106,11 @@ public class Game implements Runnable {
             snake.setDirection(Snake.Direction.RIGHT);
         }
 
+        if (snake.inCollision(food)) {
+            food.reLocate(CELLS_COUNT);
+            snake.growTail();
+        }
+
         currentTPS++;
     }
 
@@ -120,6 +129,7 @@ public class Game implements Runnable {
         //Draw Area
 
         snake.draw(graphics);
+        food.draw(graphics);
 
         //Draw Area
 
