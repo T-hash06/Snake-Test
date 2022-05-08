@@ -17,14 +17,14 @@ public class Window {
         this.title = title;
 
         this.canvas = new Canvas();
-        this.canvas.setBackground(new Color(40, 40, 40));
 
         this.frame = new JFrame(title);
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.frame.setLayout(new BorderLayout());
-        this.frame.setPreferredSize(new Dimension(width, height));
+        this.frame.getContentPane().setPreferredSize(new Dimension(width, height));
         this.frame.add(this.canvas);
         this.frame.pack();
+        this.frame.setLocationRelativeTo(null);
         this.frame.setResizable(false);
         this.frame.setVisible(true);
     }
