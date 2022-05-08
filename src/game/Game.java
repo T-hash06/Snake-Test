@@ -1,7 +1,10 @@
 package game;
 
+import control.Keyboard;
 import graphics.Helper;
 import graphics.Window;
+import objects.GameObject;
+import objects.Snake;
 
 import java.awt.*;
 import java.awt.image.BufferStrategy;
@@ -20,11 +23,15 @@ public class Game implements Runnable {
     private final Window window;
     private Thread thread;
 
+    private final Keyboard keyboard;
     private final Snake snake;
 
     public Game() {
         this.window = new Window(WIDTH, HEIGHT, TITLE);
+        this.keyboard = new Keyboard();
         this.snake = new Snake(0, 0, Color.red);
+
+        this.window.getFrame().addKeyListener(keyboard);
     }
 
     public void start() {
@@ -79,7 +86,14 @@ public class Game implements Runnable {
     }
 
     private void tick() {
+        keyboard.tick();
         snake.tick();
+
+        if (keyboard.upPressed) snake.setDirection(Snake.Direction.UP);
+        if (keyboard.downPressed) snake.setDirection(Snake.Direction.DOWN);
+        if (keyboard.leftPressed) snake.setDirection(Snake.Direction.LEFT);
+        if (keyboard.rightPressed) snake.setDirection(Snake.Direction.RIGHT);
+
         currentTPS++;
     }
 

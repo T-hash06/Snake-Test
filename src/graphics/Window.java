@@ -17,6 +17,7 @@ public class Window {
         this.title = title;
 
         this.canvas = new Canvas();
+        this.canvas.setFocusable(false);
 
         this.frame = new JFrame(title);
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
