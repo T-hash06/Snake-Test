@@ -26,7 +26,7 @@ public class Game implements Runnable {
     private Thread thread;
 
     private final Keyboard keyboard;
-    private final Snake snake;
+    private Snake snake;
     private final Food food;
 
     public Game() {
@@ -34,7 +34,7 @@ public class Game implements Runnable {
         this.keyboard = new Keyboard();
 
         this.window.getFrame().addKeyListener(keyboard);
-        this.snake = new Snake(0, 0, Color.red);
+        this.snake = new Snake(CELLS_COUNT / 2, CELLS_COUNT / 2, Color.red);
         this.food = new Food(CELLS_COUNT, Color.green);
     }
 
@@ -109,6 +109,11 @@ public class Game implements Runnable {
         if (snake.inCollision(food)) {
             food.reLocate(CELLS_COUNT);
             snake.growTail();
+        }
+
+        if (!snake.isAlive()) {
+            this.snake = new Snake(CELLS_COUNT / 2, CELLS_COUNT / 2, Color.red);
+            this.food.reLocate(CELLS_COUNT);
         }
 
         currentTPS++;

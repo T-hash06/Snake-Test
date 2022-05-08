@@ -22,4 +22,8 @@ public abstract class GameObject {
     public boolean inCollision(GameObject object) {
         return this.x == object.x && this.y == object.y;
     }
+
+    public boolean inCollision(GameObject firstObject, GameObject secondObject) {
+        return firstObject.x == secondObject.x && firstObject.y == secondObject.y;
+    }
 }
