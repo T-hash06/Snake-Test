@@ -11,13 +11,15 @@ public final class Snake extends GameObject {
     private Direction direction;
     private Snake tail;
     private boolean isAlive;
+    private int positionLimit;
 
-    public Snake(int x, int y, Color color) {
+    public Snake(int x, int y, Color color, int cellsCount) {
         super(x * STANDARD_SIZE, y * STANDARD_SIZE, color);
 
         this.direction = Direction.RIGHT;
         this.isHead = true;
         this.isAlive = true;
+        this.positionLimit = cellsCount - 1;
     }
 
     public Snake(boolean isHead, int x, int y, Color color) {
@@ -51,9 +53,7 @@ public final class Snake extends GameObject {
             this.tail.tick(lastX, lastY);
         }
 
-        if (this.inCollisionWithTail(this)) {
-            isAlive = false;
-        }
+        isAlive = !this.inCollisionWithTail(this) && !this.outOfLimits();
     }
 
     private void tick(int x, int y) {
@@ -93,6 +93,10 @@ public final class Snake extends GameObject {
         } else {
             this.tail.growTail();
         }
+    }
+
+    private boolean outOfLimits() {
+        return (this.x < 0 || this.x > positionLimit * STANDARD_SIZE) || (this.y < 0 || this.y > positionLimit * STANDARD_SIZE);
     }
 
     public boolean inCollisionWithTail(Snake head) {

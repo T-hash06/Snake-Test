@@ -34,7 +34,7 @@ public class Game implements Runnable {
         this.keyboard = new Keyboard();
 
         this.window.getFrame().addKeyListener(keyboard);
-        this.snake = new Snake(CELLS_COUNT / 2, CELLS_COUNT / 2, Color.red);
+        this.snake = new Snake(CELLS_COUNT / 2, CELLS_COUNT / 2, Color.red, CELLS_COUNT);
         this.food = new Food(CELLS_COUNT, Color.green);
     }
 
@@ -112,7 +112,7 @@ public class Game implements Runnable {
         }
 
         if (!snake.isAlive()) {
-            this.snake = new Snake(CELLS_COUNT / 2, CELLS_COUNT / 2, Color.red);
+            this.snake = new Snake(CELLS_COUNT / 2, CELLS_COUNT / 2, Color.red, CELLS_COUNT);
             this.food.reLocate(CELLS_COUNT);
         }
 
@@ -129,7 +129,6 @@ public class Game implements Runnable {
         Graphics graphics = bufferStrategy.getDrawGraphics();
 
         Helper.clearBackground(WIDTH, HEIGHT, graphics);
-        Helper.drawCells(WIDTH, HEIGHT, GameObject.STANDARD_SIZE, graphics);
 
         //Draw Area
 
@@ -138,6 +137,7 @@ public class Game implements Runnable {
 
         //Draw Area
 
+        Helper.drawCells(WIDTH, HEIGHT, GameObject.STANDARD_SIZE, graphics);
         graphics.dispose();
         bufferStrategy.show();
         currentFPS++;
