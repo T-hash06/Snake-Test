@@ -17,11 +17,10 @@ public final class Snake extends GameObject {
 
     @Override
     public void tick() {
-
-        if (this.direction == Direction.RIGHT) this.x++;
-        if (this.direction == Direction.LEFT) this.x--;
-        if (this.direction == Direction.DOWN) this.y++;
-        if (this.direction == Direction.UP) this.y--;
+        if (this.direction == Direction.RIGHT) this.x += this.width;
+        if (this.direction == Direction.LEFT) this.x -= this.width;
+        if (this.direction == Direction.DOWN) this.y += this.height;
+        if (this.direction == Direction.UP) this.y -= this.height;
     }
 
     @Override
