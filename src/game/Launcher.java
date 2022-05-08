@@ -2,7 +2,11 @@ package game;
 
 public class Launcher {
 
+    private static Game game;
+
     public static void main(String[] args) {
-        System.out.println("Hola Mundo");
+        game = new Game();
+        game.start();
+        game.stop();
     }
 }
