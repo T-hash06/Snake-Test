@@ -4,7 +4,7 @@ import java.awt.*;
 
 public abstract class GameObject {
 
-    public static final int STANDARD_SIZE = 20;
+    public static final int STANDARD_SIZE = 30;
     protected int x, y;
     protected final Color color;
     protected final int width = STANDARD_SIZE, height = STANDARD_SIZE;

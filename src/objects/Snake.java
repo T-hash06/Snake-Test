@@ -4,7 +4,7 @@ import java.awt.*;
 
 public final class Snake extends GameObject {
     public enum Direction {
-        RIGHT, LEFT, UP, DOWN;
+        RIGHT, LEFT, UP, DOWN
     }
 
     private final boolean isHead;

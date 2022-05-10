@@ -12,9 +12,9 @@ import java.awt.image.BufferStrategy;
 
 public class Game implements Runnable {
 
-    private final int WIDTH = 600;
-    private final int HEIGHT = 600;
-    private final int CELLS_COUNT = WIDTH / GameObject.STANDARD_SIZE;
+    private final int CELLS_COUNT = 20;
+    private final int WIDTH = CELLS_COUNT * GameObject.STANDARD_SIZE;
+    private final int HEIGHT = CELLS_COUNT * GameObject.STANDARD_SIZE;
     private final String TITLE = "My Game";
 
     private int currentTPS = 0;
