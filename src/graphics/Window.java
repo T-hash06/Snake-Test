@@ -3,7 +3,7 @@ package graphics;
 import javax.swing.*;
 import java.awt.*;
 
-public class Window {
+public final class Window {
 
     private String title;
     private final int width, height;

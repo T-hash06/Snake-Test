@@ -11,12 +11,14 @@ public final class Keyboard implements KeyListener {
     public boolean downPressed;
     public boolean leftPressed;
     public boolean rightPressed;
+    public boolean spacePressed;
 
     public void tick() {
         upPressed = keys[KeyEvent.VK_W];
         downPressed = keys[KeyEvent.VK_S];
         leftPressed = keys[KeyEvent.VK_A];
         rightPressed = keys[KeyEvent.VK_D];
+        spacePressed = keys[KeyEvent.VK_SPACE];
     }
 
     @Override

@@ -3,14 +3,13 @@ package game;
 import control.Keyboard;
 import graphics.Helper;
 import graphics.Window;
-import objects.Food;
+import logic.World;
 import objects.GameObject;
-import objects.Snake;
 
 import java.awt.*;
 import java.awt.image.BufferStrategy;
 
-public class Game implements Runnable {
+public final class Game implements Runnable {
 
     private final int CELLS_COUNT = 20;
     private final int WIDTH = CELLS_COUNT * GameObject.STANDARD_SIZE;
@@ -26,16 +25,14 @@ public class Game implements Runnable {
     private Thread thread;
 
     private final Keyboard keyboard;
-    private Snake snake;
-    private final Food food;
+    private final World world;
 
     public Game() {
         this.window = new Window(WIDTH, HEIGHT, TITLE);
         this.keyboard = new Keyboard();
 
         this.window.getFrame().addKeyListener(keyboard);
-        this.snake = new Snake(CELLS_COUNT / 2, CELLS_COUNT / 2, Color.red, CELLS_COUNT);
-        this.food = new Food(CELLS_COUNT, Color.green);
+        this.world = new World(CELLS_COUNT, Color.red, Color.green);
     }
 
     public void start() {
@@ -91,30 +88,8 @@ public class Game implements Runnable {
 
     private void tick() {
         keyboard.tick();
-        snake.tick();
 
-        if (keyboard.upPressed && snake.getDirection() != Snake.Direction.DOWN) {
-            snake.setDirection(Snake.Direction.UP);
-        }
-        if (keyboard.downPressed && snake.getDirection() != Snake.Direction.UP) {
-            snake.setDirection(Snake.Direction.DOWN);
-        }
-        if (keyboard.leftPressed && snake.getDirection() != Snake.Direction.RIGHT) {
-            snake.setDirection(Snake.Direction.LEFT);
-        }
-        if (keyboard.rightPressed && snake.getDirection() != Snake.Direction.LEFT) {
-            snake.setDirection(Snake.Direction.RIGHT);
-        }
-
-        if (snake.inCollision(food)) {
-            food.reLocate(CELLS_COUNT);
-            snake.growTail();
-        }
-
-        if (!snake.isAlive()) {
-            this.snake = new Snake(CELLS_COUNT / 2, CELLS_COUNT / 2, Color.red, CELLS_COUNT);
-            this.food.reLocate(CELLS_COUNT);
-        }
+        world.tick();
 
         currentTPS++;
     }
@@ -131,10 +106,7 @@ public class Game implements Runnable {
         Helper.clearBackground(WIDTH, HEIGHT, graphics);
 
         //Draw Area
-
-        snake.draw(graphics);
-        food.draw(graphics);
-
+        world.draw(graphics);
         //Draw Area
 
         Helper.drawCells(WIDTH, HEIGHT, GameObject.STANDARD_SIZE, graphics);
