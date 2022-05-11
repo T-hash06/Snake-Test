@@ -3,7 +3,7 @@ package game;
 import control.Keyboard;
 import graphics.Helper;
 import graphics.Window;
-import logic.World;
+import logic.WorldManager;
 import objects.GameObject;
 
 import java.awt.*;
@@ -25,14 +25,14 @@ public final class Game implements Runnable {
     private Thread thread;
 
     private final Keyboard keyboard;
-    private final World world;
+    private final WorldManager worldManager;
 
     public Game() {
         this.window = new Window(WIDTH, HEIGHT, TITLE);
         this.keyboard = new Keyboard();
 
         this.window.getFrame().addKeyListener(keyboard);
-        this.world = new World(CELLS_COUNT, Color.red, Color.green);
+        this.worldManager = new WorldManager(5, CELLS_COUNT);
     }
 
     public void start() {
@@ -89,7 +89,7 @@ public final class Game implements Runnable {
     private void tick() {
         keyboard.tick();
 
-        world.tick();
+        worldManager.tick();
 
         currentTPS++;
     }
@@ -106,7 +106,8 @@ public final class Game implements Runnable {
         Helper.clearBackground(WIDTH, HEIGHT, graphics);
 
         //Draw Area
-        world.draw(graphics);
+        worldManager.draw(graphics);
+
         //Draw Area
 
         Helper.drawCells(WIDTH, HEIGHT, GameObject.STANDARD_SIZE, graphics);
