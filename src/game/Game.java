@@ -32,7 +32,7 @@ public final class Game implements Runnable {
         this.keyboard = new Keyboard();
 
         this.window.getFrame().addKeyListener(keyboard);
-        this.worldManager = new WorldManager(5, CELLS_COUNT);
+        this.worldManager = new WorldManager(200, CELLS_COUNT);
     }
 
     public void start() {
@@ -88,6 +88,9 @@ public final class Game implements Runnable {
 
     private void tick() {
         keyboard.tick();
+
+        if (keyboard.upArrowPressed) worldManager.increaseCountRenderedWorlds(1);
+        if (keyboard.downArrowPressed) worldManager.increaseCountRenderedWorlds(-1);
 
         worldManager.tick();
 

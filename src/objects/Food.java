@@ -6,7 +6,7 @@ public final class Food extends GameObject {
     public Food(int cellsCount, Color color) {
         super(0, 0, color);
 
-        this.reLocate(cellsCount - 1);
+        this.reLocate(cellsCount);
     }
 
     @Override
@@ -22,8 +22,8 @@ public final class Food extends GameObject {
     }
 
     public void reLocate(int cellsCount) {
-        int randomX = (int) Math.round(Math.random() * cellsCount);
-        int randomY = (int) Math.round(Math.random() * cellsCount);
+        int randomX = (int) Math.round(Math.random() * (cellsCount - 1));
+        int randomY = (int) Math.round(Math.random() * (cellsCount - 1));
 
         this.x = randomX * STANDARD_SIZE;
         this.y = randomY * STANDARD_SIZE;
