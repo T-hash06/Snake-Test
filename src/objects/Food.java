@@ -27,5 +27,7 @@ public final class Food extends GameObject {
 
         this.x = randomX * STANDARD_SIZE;
         this.y = randomY * STANDARD_SIZE;
+
+        this.updatePosition();
     }
 }

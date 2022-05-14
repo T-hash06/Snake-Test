@@ -1,5 +1,7 @@
 package objects;
 
+import logic.NeuralNetwork;
+
 import java.awt.*;
 
 public final class Snake extends GameObject {
@@ -10,16 +12,23 @@ public final class Snake extends GameObject {
     private final boolean isHead;
     private Direction direction;
     private Snake tail;
+    private Point foodPosition;
+
     private boolean isAlive;
     private int positionLimit;
 
-    public Snake(int x, int y, Color color, int cellsCount) {
+    private final double[] senses = new double[4];
+    private final NeuralNetwork brain = new NeuralNetwork(new int[]{senses.length, 8, 4});
+
+    public Snake(int x, int y, Point foodPosition, Color color, int cellsCount) {
         super(x * STANDARD_SIZE, y * STANDARD_SIZE, color);
 
         this.direction = Direction.RIGHT;
         this.isHead = true;
         this.isAlive = true;
         this.positionLimit = cellsCount - 1;
+
+        this.foodPosition = foodPosition;
     }
 
     public Snake(boolean isHead, int x, int y, Color color) {
@@ -34,7 +43,17 @@ public final class Snake extends GameObject {
         int lastX = this.x;
         int lastY = this.y;
 
+
         if (this.isHead) {
+            double floatX = (float) x / (positionLimit * STANDARD_SIZE);
+            double floatY = (float) y / (positionLimit * STANDARD_SIZE);
+
+            double floatFoodX = (float) this.foodPosition.x / (positionLimit * STANDARD_SIZE);
+            double floatFoodY = (float) this.foodPosition.y / (positionLimit * STANDARD_SIZE);
+
+            double[] choose = this.brain.calculate(new double[]{floatX, floatY, floatFoodX, floatFoodY});
+            setDirectionWithBrain(choose);
+
             if (this.direction == Direction.RIGHT) {
                 this.x += this.width;
             }
@@ -105,6 +124,31 @@ public final class Snake extends GameObject {
             else return this.tail.inCollisionWithTail(head);
         }
         return false;
+    }
+
+    private void setDirectionWithBrain(double[] decisions) {
+        if (decisions.length != 4) {
+            System.out.println("Desicions are corrupted!");
+            return;
+        }
+
+        int bestDesicion = getBestDesicionIndex(decisions);
+
+        if (bestDesicion == 0) this.direction = Direction.UP;
+        if (bestDesicion == 1) this.direction = Direction.DOWN;
+        if (bestDesicion == 2) this.direction = Direction.LEFT;
+        if (bestDesicion == 3) this.direction = Direction.RIGHT;
+    }
+
+    public int getBestDesicionIndex(double[] desicions) {
+        int index = 0;
+        for (int i = 1; i < desicions.length; i++) {
+            if (desicions[i] > desicions[index]) {
+                index = i;
+            }
+        }
+
+        return index;
     }
 
     public boolean isAlive() {

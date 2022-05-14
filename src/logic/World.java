@@ -17,8 +17,8 @@ public final class World {
 
     public World(int cellsCount, Color snakeColor, Color foodColor) {
         this.cellsCount = cellsCount;
-        this.snake = new Snake(cellsCount / 2, cellsCount / 2, snakeColor, cellsCount);
         this.food = new Food(cellsCount, foodColor);
+        this.snake = new Snake(cellsCount / 2, cellsCount / 2, this.food.getPosition(), snakeColor, cellsCount);
 
         this.bornTime = System.nanoTime();
         this.isRunning = true;
@@ -35,8 +35,8 @@ public final class World {
         }
 
         if (!snake.isAlive()) {
-            this.snake = new Snake(cellsCount / 2, cellsCount / 2, Color.red, cellsCount);
             this.food.reLocate(cellsCount);
+            this.snake = new Snake(cellsCount / 2, cellsCount / 2, this.food.getPosition(), Color.red, cellsCount);
         }
     }
 
