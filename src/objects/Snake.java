@@ -14,9 +14,11 @@ public final class Snake extends GameObject {
     private Snake tail;
     private Point foodPosition;
 
-    private boolean isAlive;
-    private int positionLimit;
     private int directionChanges;
+    private int positionLimit;
+    private boolean isAlive;
+    private double score;
+    private int tailSize;
 
     private final double[] senses = new double[4];
     private final NeuralNetwork brain = new NeuralNetwork(new int[]{senses.length, 8, 4});
@@ -31,6 +33,8 @@ public final class Snake extends GameObject {
 
         this.foodPosition = foodPosition;
         this.directionChanges = 0;
+        this.score = 0;
+        this.tailSize = 0;
     }
 
     public Snake(boolean isHead, int x, int y, Color color) {
@@ -70,7 +74,7 @@ public final class Snake extends GameObject {
             }
 
             if (this.directionChanges > 20) {
-                this.isAlive = false;
+                kill(0);
                 return;
             }
         }
@@ -79,7 +83,7 @@ public final class Snake extends GameObject {
             this.tail.tick(lastX, lastY);
         }
 
-        isAlive = !this.inCollisionWithTail(this) && !this.outOfLimits();
+        if (this.inCollisionWithTail(this) || this.outOfLimits()) kill();
     }
 
     private void tick(int x, int y) {
@@ -116,6 +120,7 @@ public final class Snake extends GameObject {
     public void growTail() {
         if (this.tail == null) {
             this.tail = new Snake(false, this.x, this.y, this.color);
+            this.tailSize++;
         } else {
             this.tail.growTail();
         }
@@ -172,5 +177,19 @@ public final class Snake extends GameObject {
 
     public boolean isAlive() {
         return isAlive;
+    }
+
+    private void kill() {
+        this.isAlive = false;
+        this.score = (0.5 * this.directionChanges * this.tailSize) + 0.25 * this.directionChanges;
+    }
+
+    private void kill(int foredScore) {
+        this.isAlive = false;
+        this.score = foredScore;
+    }
+
+    public double getScore() {
+        return score;
     }
 }
