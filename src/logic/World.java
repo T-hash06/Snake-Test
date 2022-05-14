@@ -9,7 +9,7 @@ public final class World {
 
     private Snake snake;
     private final Food food;
-    private final boolean isRunning;
+    private boolean isRunning;
     private final boolean isSnakeAlive;
     private final int cellsCount;
 
@@ -35,6 +35,7 @@ public final class World {
         }
 
         if (!snake.isAlive()) {
+//            this.isRunning = false;
             this.food.reLocate(cellsCount);
             this.snake = new Snake(cellsCount / 2, cellsCount / 2, this.food.getPosition(), Color.red, cellsCount);
         }

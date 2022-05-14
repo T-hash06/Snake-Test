@@ -16,6 +16,7 @@ public final class Snake extends GameObject {
 
     private boolean isAlive;
     private int positionLimit;
+    private int directionChanges;
 
     private final double[] senses = new double[4];
     private final NeuralNetwork brain = new NeuralNetwork(new int[]{senses.length, 8, 4});
@@ -29,6 +30,7 @@ public final class Snake extends GameObject {
         this.positionLimit = cellsCount - 1;
 
         this.foodPosition = foodPosition;
+        this.directionChanges = 0;
     }
 
     public Snake(boolean isHead, int x, int y, Color color) {
@@ -65,6 +67,11 @@ public final class Snake extends GameObject {
             }
             if (this.direction == Direction.UP) {
                 this.y -= this.height;
+            }
+
+            if (this.directionChanges > 20) {
+                this.isAlive = false;
+                return;
             }
         }
 
@@ -134,10 +141,22 @@ public final class Snake extends GameObject {
 
         int bestDesicion = getBestDesicionIndex(decisions);
 
-        if (bestDesicion == 0) this.direction = Direction.UP;
-        if (bestDesicion == 1) this.direction = Direction.DOWN;
-        if (bestDesicion == 2) this.direction = Direction.LEFT;
-        if (bestDesicion == 3) this.direction = Direction.RIGHT;
+        if (bestDesicion == 0 && this.direction != Direction.UP) {
+            this.directionChanges++;
+            this.direction = Direction.UP;
+        }
+        if (bestDesicion == 1 && this.direction != Direction.DOWN) {
+            this.directionChanges++;
+            this.direction = Direction.DOWN;
+        }
+        if (bestDesicion == 2 && this.direction != Direction.LEFT) {
+            this.directionChanges++;
+            this.direction = Direction.LEFT;
+        }
+        if (bestDesicion == 3 && this.direction != Direction.RIGHT) {
+            this.directionChanges++;
+            this.direction = Direction.RIGHT;
+        }
     }
 
     public int getBestDesicionIndex(double[] desicions) {
