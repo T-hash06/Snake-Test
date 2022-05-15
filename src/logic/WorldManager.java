@@ -21,9 +21,15 @@ public final class WorldManager {
     }
 
     public void tick() {
+        int worlsAlive = 0;
         for (World world : this.worlds) {
-            world.tick();
+            if (world.isSnakeAlive()) {
+                worlsAlive++;
+                world.tick();
+            }
         }
+        
+
     }
 
     public void draw(Graphics g) {

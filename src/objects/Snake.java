@@ -184,12 +184,16 @@ public final class Snake extends GameObject {
         this.score = (0.5 * this.directionChanges * this.tailSize) + 0.25 * this.directionChanges;
     }
 
-    private void kill(int foredScore) {
+    private void kill(int forcedScore) {
         this.isAlive = false;
-        this.score = foredScore;
+        this.score = forcedScore;
     }
 
     public double getScore() {
         return score;
+    }
+
+    public NeuralNetwork getBrain() {
+        return brain;
     }
 }

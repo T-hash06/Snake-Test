@@ -52,7 +52,7 @@ public final class Game implements Runnable {
 
     @Override
     public void run() {
-        final int TPS = 10;
+        final int TPS = 20;
         final double NS_PER_SECOND = 1000000000;
         final double NS_PER_TICK = NS_PER_SECOND / TPS;
 

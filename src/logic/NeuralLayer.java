@@ -16,12 +16,42 @@ public final class NeuralLayer {
     //TODO: Implement more functions in another class
     private final Function<Double, Double> activationFunction = x -> ((1 - Math.exp(-2 * x)) / (1 + Math.exp(-2 * x)));
 
+    public static NeuralLayer createByAverageWeightsArray(int neuronCount, int previousNeuronCount, double[] firstWeights, double[] secondWeights) {
+
+        if (firstWeights.length != secondWeights.length) {
+            System.out.println("Inconsistent weights lenghts");
+        }
+
+        double[] result = new double[firstWeights.length];
+        for (int index = 0; index < firstWeights.length; index++) {
+            result[index] = (firstWeights[index] + secondWeights[index]) / 2;
+        }
+
+        return new NeuralLayer(neuronCount, previousNeuronCount, result);
+    }
+
     public NeuralLayer(int neuronCount, int previousNeuronCount, double[][] weights) {
 
         this.previousNeuronCount = previousNeuronCount;
         this.neuronCount = neuronCount;
 
         this.weights = weights;
+
+        this.bias = new double[neuronCount];
+        Arrays.fill(this.bias, DEFAULT_BIAS);
+    }
+
+    public NeuralLayer(int neuronCount, int previousNeuronCount, double[] weightsAsArray) {
+        this.previousNeuronCount = previousNeuronCount;
+        this.neuronCount = neuronCount;
+
+        this.weights = new double[previousNeuronCount][neuronCount];
+
+        for (int current = 0; current < neuronCount; current++) {
+            for (int previous = 0; previous < previousNeuronCount; previous++) {
+                this.weights[previous][current] = weightsAsArray[current + (previous * neuronCount)];
+            }
+        }
 
         this.bias = new double[neuronCount];
         Arrays.fill(this.bias, DEFAULT_BIAS);
@@ -76,5 +106,23 @@ public final class NeuralLayer {
         }
 
         return values;
+    }
+
+    public double[][] getWeights() {
+        return weights;
+    }
+
+    public double[] getWeightsAsArray() {
+        double[] result = new double[this.previousNeuronCount * this.neuronCount];
+
+        int index = 0;
+        for (double[] row : this.weights) {
+            for (double weight : row) {
+                result[index] = weight;
+                index++;
+            }
+        }
+
+        return result;
     }
 }
