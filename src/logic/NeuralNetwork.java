@@ -1,12 +1,41 @@
 package logic;
 
+import java.util.Arrays;
+
 public final class NeuralNetwork {
 
     private final int[] topology;
     private NeuralLayer[] layers;
 
-    public NeuralNetwork(int[] topology) {
+    public static NeuralNetwork createByAverageLayers(NeuralNetwork firstNetwork, NeuralNetwork secondNetwork) {
 
+        if (firstNetwork.layers.length != secondNetwork.layers.length) {
+            System.out.println("Neural Networks with different layers count!");
+        }
+
+        if (!Arrays.equals(firstNetwork.topology, secondNetwork.topology)) {
+            System.out.println("Neural Networks with different topology!");
+        }
+
+        NeuralLayer[] neuralLayers = new NeuralLayer[firstNetwork.layers.length];
+
+        for (int layer = 0; layer < firstNetwork.layers.length; layer++) {
+            if (layer == 0) {
+                neuralLayers[layer] = new NeuralLayer(firstNetwork.topology[layer]);
+                continue;
+            }
+            neuralLayers[layer] =
+                    NeuralLayer.createByAverageWeightsArray(
+                            firstNetwork.topology[layer],
+                            secondNetwork.topology[layer - 1],
+                            firstNetwork.layers[layer].getWeightsAsArray(),
+                            secondNetwork.layers[layer].getWeightsAsArray());
+        }
+
+        return new NeuralNetwork(neuralLayers);
+    }
+
+    public NeuralNetwork(int[] topology) {
         this.topology = topology;
         this.layers = new NeuralLayer[topology.length];
         for (int index = 0; index < topology.length; index++) {
@@ -19,9 +48,17 @@ public final class NeuralNetwork {
         }
     }
 
+    public NeuralNetwork(NeuralLayer[] layers) {
+        this.topology = new int[layers.length];
+        this.layers = layers.clone();
+
+        for (int index = 0; index < this.topology.length; index++) {
+            this.topology[index] = layers[index].getNeuronCount();
+        }
+    }
+
     public double[] calculate(double[] inputValues) {
 
-        double helper = 0;
         double[] previousValues = null;
 
         for (int index = 1; index < topology.length; index++) {
@@ -34,5 +71,24 @@ public final class NeuralNetwork {
         }
 
         return previousValues;
+    }
+
+    public int[] getTopology() {
+        return topology;
+    }
+
+    public NeuralLayer[] getLayers() {
+        return layers;
+    }
+
+    public void resetLayers() {
+        for (int index = 0; index < topology.length; index++) {
+            if (index == 0) {
+                this.layers[index] = new NeuralLayer(topology[index]);
+                continue;
+            }
+
+            this.layers[index] = new NeuralLayer(topology[index], topology[index - 1]);
+        }
     }
 }

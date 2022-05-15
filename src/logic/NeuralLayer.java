@@ -35,7 +35,7 @@ public final class NeuralLayer {
         this.previousNeuronCount = previousNeuronCount;
         this.neuronCount = neuronCount;
 
-        this.weights = weights;
+        this.weights = weights.clone();
 
         this.bias = new double[neuronCount];
         Arrays.fill(this.bias, DEFAULT_BIAS);
@@ -124,5 +124,9 @@ public final class NeuralLayer {
         }
 
         return result;
+    }
+
+    public int getNeuronCount() {
+        return neuronCount;
     }
 }
