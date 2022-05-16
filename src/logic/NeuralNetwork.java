@@ -5,7 +5,7 @@ import java.util.Arrays;
 public final class NeuralNetwork {
 
     private final int[] topology;
-    private NeuralLayer[] layers;
+    private final NeuralLayer[] layers;
 
     public static NeuralNetwork createByAverageLayers(NeuralNetwork firstNetwork, NeuralNetwork secondNetwork) {
 

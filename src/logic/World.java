@@ -5,9 +5,9 @@ import objects.Snake;
 
 import java.awt.*;
 
-public final class World {
+public final class World implements Comparable {
 
-    private Snake snake;
+    private final Snake snake;
     private final Food food;
     private boolean isRunning;
     private boolean isSnakeAlive;
@@ -59,5 +59,11 @@ public final class World {
 
     public Snake getSnake() {
         return snake;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+
+        return Double.compare(this.getScore(), ((World) o).getScore());
     }
 }

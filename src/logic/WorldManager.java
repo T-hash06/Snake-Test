@@ -1,12 +1,15 @@
 package logic;
 
 import java.awt.*;
+import java.util.Arrays;
+import java.util.Collections;
 
 public final class WorldManager {
 
     private final World[] worlds;
     private int countRenderedWorlds;
     private final int worldCount;
+    private int generation;
 
     //TODO: Variable snake color
     public WorldManager(int worldCount, int cellsCount) {
@@ -18,6 +21,7 @@ public final class WorldManager {
 
         this.worldCount = worldCount;
         this.countRenderedWorlds = 1;
+        this.generation = 0;
     }
 
     public void tick() {
@@ -28,8 +32,12 @@ public final class WorldManager {
                 world.tick();
             }
         }
-        
 
+        if (worlsAlive == 0) {
+            sortWorldsByScore();
+            System.out.println(worlds[0].getScore());
+            System.out.println("=====================");
+        }
     }
 
     public void draw(Graphics g) {
@@ -49,6 +57,10 @@ public final class WorldManager {
         }
 
         this.countRenderedWorlds += step;
+    }
+
+    private void sortWorldsByScore() {
+        Arrays.sort(this.worlds, Collections.reverseOrder());
     }
 
     public int getCountRenderedWorlds() {

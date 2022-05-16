@@ -32,7 +32,7 @@ public final class Game implements Runnable {
         this.keyboard = new Keyboard();
 
         this.window.getFrame().addKeyListener(keyboard);
-        this.worldManager = new WorldManager(1, CELLS_COUNT);
+        this.worldManager = new WorldManager(10, CELLS_COUNT);
     }
 
     public void start() {
