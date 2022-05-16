@@ -21,7 +21,7 @@ public final class Snake extends GameObject {
     private int tailSize;
 
     private final double[] senses = new double[4];
-    private final NeuralNetwork brain = new NeuralNetwork(new int[]{senses.length, 8, 4});
+    private NeuralNetwork brain = new NeuralNetwork(new int[]{senses.length, 8, 16, 4, 4});
 
     public Snake(int x, int y, Point foodPosition, Color color, int cellsCount) {
         super(x * STANDARD_SIZE, y * STANDARD_SIZE, color);
@@ -35,6 +35,21 @@ public final class Snake extends GameObject {
         this.directionChanges = 0;
         this.score = 0;
         this.tailSize = 0;
+    }
+
+    public Snake(int x, int y, Point foodPosition, NeuralNetwork brain, Color color, int cellsCount) {
+        super(x * STANDARD_SIZE, y * STANDARD_SIZE, color);
+
+        this.direction = Direction.RIGHT;
+        this.isHead = true;
+        this.isAlive = true;
+        this.positionLimit = cellsCount - 1;
+
+        this.foodPosition = foodPosition;
+        this.directionChanges = 0;
+        this.score = 0;
+        this.tailSize = 0;
+        this.brain = brain;
     }
 
     public Snake(boolean isHead, int x, int y, Color color) {

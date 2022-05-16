@@ -5,7 +5,7 @@ import objects.Snake;
 
 import java.awt.*;
 
-public final class World implements Comparable {
+public final class World implements Comparable<World> {
 
     private final Snake snake;
     private final Food food;
@@ -25,6 +25,16 @@ public final class World implements Comparable {
         this.score = 0;
     }
 
+    public World(int cellsCount, NeuralNetwork snakeBrain, Color snakeColor, Color foodColor) {
+        this.cellsCount = cellsCount;
+        this.food = new Food(cellsCount, foodColor);
+        this.snake = new Snake(cellsCount / 2, cellsCount / 2, this.food.getPosition(), snakeBrain, snakeColor, cellsCount);
+
+        this.isRunning = true;
+        this.isSnakeAlive = true;
+        this.score = 0;
+    }
+
     public void tick() {
         if (!this.isRunning) return;
         this.snake.tick();
@@ -38,7 +48,6 @@ public final class World implements Comparable {
             this.isRunning = false;
             this.score = this.snake.getScore();
             this.isSnakeAlive = false;
-            System.out.println(this.score);
 //            this.food.reLocate(cellsCount);
 //            this.snake = new Snake(cellsCount / 2, cellsCount / 2, this.food.getPosition(), Color.red, cellsCount);
         }
@@ -62,8 +71,8 @@ public final class World implements Comparable {
     }
 
     @Override
-    public int compareTo(Object o) {
+    public int compareTo(World o) {
 
-        return Double.compare(this.getScore(), ((World) o).getScore());
+        return Double.compare(this.getScore(), o.getScore());
     }
 }
