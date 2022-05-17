@@ -7,7 +7,7 @@ public final class NeuralNetwork {
     private final int[] topology;
     private final NeuralLayer[] layers;
 
-    public static NeuralNetwork createByAverageLayers(NeuralNetwork firstNetwork, NeuralNetwork secondNetwork) {
+    public static NeuralNetwork[] createFromTwoNetworks(NeuralNetwork firstNetwork, NeuralNetwork secondNetwork) {
 
         if (firstNetwork.layers.length != secondNetwork.layers.length) {
             System.out.println("Neural Networks with different layers count!");
@@ -17,22 +17,27 @@ public final class NeuralNetwork {
             System.out.println("Neural Networks with different topology!");
         }
 
-        NeuralLayer[] neuralLayers = new NeuralLayer[firstNetwork.layers.length];
+        NeuralLayer[] firstLayers = new NeuralLayer[firstNetwork.layers.length];
+        NeuralLayer[] secondLayers = new NeuralLayer[firstNetwork.layers.length];
 
         for (int layer = 0; layer < firstNetwork.layers.length; layer++) {
             if (layer == 0) {
-                neuralLayers[layer] = new NeuralLayer(firstNetwork.topology[layer]);
+                firstLayers[layer] = new NeuralLayer(firstNetwork.topology[layer]);
+                secondLayers[layer] = new NeuralLayer(firstNetwork.topology[layer]);
                 continue;
             }
-            neuralLayers[layer] =
-                    NeuralLayer.createByAverageWeightsArray(
-                            firstNetwork.topology[layer],
-                            secondNetwork.topology[layer - 1],
-                            firstNetwork.layers[layer].getWeightsAsArray(),
-                            secondNetwork.layers[layer].getWeightsAsArray());
+
+            NeuralLayer[] helper = NeuralLayer.createTwoByWeightsArray(
+                    firstNetwork.topology[layer],
+                    secondNetwork.topology[layer - 1],
+                    firstNetwork.layers[layer].getWeightsAsArray(),
+                    secondNetwork.layers[layer].getWeightsAsArray(),
+                    NeuralLayer.ReproductionMethods.SIMPLE_DIVISION);
+            firstLayers[layer] = helper[0];
+            secondLayers[layer] = helper[1];
         }
 
-        return new NeuralNetwork(neuralLayers);
+        return new NeuralNetwork[]{new NeuralNetwork(firstLayers), new NeuralNetwork(secondLayers)};
     }
 
     public NeuralNetwork(int[] topology) {

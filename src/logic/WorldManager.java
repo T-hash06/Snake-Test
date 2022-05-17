@@ -74,13 +74,13 @@ public final class WorldManager {
         ArrayList<World> bestWorlds = new ArrayList<>();
 
         for (int index = 0; index < worldCount; index += 2) {
-            NeuralNetwork temporalBrain = NeuralNetwork.
-                    createByAverageLayers(
+            NeuralNetwork[] temporalBrains = NeuralNetwork.
+                    createFromTwoNetworks(
                             worlds[index].getSnake().getBrain(),
                             worlds[index + 1].getSnake().getBrain());
 
-            newWorlds[index] = new World(cellsCount, temporalBrain, Color.red, Color.green);
-            newWorlds[(index) + 1] = new World(cellsCount, temporalBrain, Color.red, Color.green);
+            newWorlds[index] = new World(cellsCount, temporalBrains[0], Color.red, Color.green);
+            newWorlds[(index) + 1] = new World(cellsCount, temporalBrains[1], Color.red, Color.green);
         }
 
         this.worlds = newWorlds.clone();

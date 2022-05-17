@@ -5,6 +5,10 @@ import java.util.function.Function;
 
 public final class NeuralLayer {
 
+    public enum ReproductionMethods {
+        WEIGHTS_AVERAGE, SIMPLE_DIVISION, ALTERNATE_DIVISION
+    }
+
     public static final double DEFAULT_BIAS = 0;
 
     private final int neuronCount;
@@ -16,10 +20,10 @@ public final class NeuralLayer {
     //TODO: Implement more functions in another class
     private final Function<Double, Double> activationFunction = x -> ((1 - Math.exp(-2 * x)) / (1 + Math.exp(-2 * x)));
 
-    public static NeuralLayer createByAverageWeightsArray(int neuronCount, int previousNeuronCount, double[] firstWeights, double[] secondWeights) {
+    public static NeuralLayer createByWeightsArray(int neuronCount, int previousNeuronCount, double[] firstWeights, double[] secondWeights) {
 
         if (firstWeights.length != secondWeights.length) {
-            System.out.println("Inconsistent weights lenghts");
+            System.out.println("Inconsistent weights lengths");
         }
 
         double[] result = new double[firstWeights.length];
@@ -28,6 +32,56 @@ public final class NeuralLayer {
         }
 
         return new NeuralLayer(neuronCount, previousNeuronCount, result);
+    }
+
+    public static NeuralLayer[] createTwoByWeightsArray(int neuronCount, int previousNeuronCount, double[] firstWeights, double[] secondWeights, ReproductionMethods reproductionMethod) {
+
+        NeuralLayer[] layers = new NeuralLayer[2];
+
+        if (firstWeights.length != secondWeights.length) {
+            System.out.println("Inconsistent weights lengths");
+        }
+
+        double[] firstResult = new double[firstWeights.length];
+        double[] secondResult = new double[firstWeights.length];
+
+        if (reproductionMethod == ReproductionMethods.WEIGHTS_AVERAGE) {
+            for (int index = 0; index < firstWeights.length; index++) {
+                firstResult[index] = (firstWeights[index] + secondWeights[index]) / 2;
+                secondResult[index] = (firstWeights[index] - secondWeights[index]) / 2;
+            }
+        } else if (reproductionMethod == ReproductionMethods.SIMPLE_DIVISION) {
+
+            int division = (firstWeights.length / 2) - 1;
+            for (int index = 0; index < firstWeights.length; index++) {
+                if (index > division) {
+                    firstResult[index] = firstWeights[index];
+                    secondResult[index] = secondWeights[index];
+                } else {
+                    firstResult[index] = secondWeights[index];
+                    secondResult[index] = firstWeights[index];
+                }
+            }
+        } else if (reproductionMethod == ReproductionMethods.ALTERNATE_DIVISION) {
+
+            boolean helper = true;
+            for (int index = 0; index < firstWeights.length; index++) {
+                if (helper) {
+                    firstResult[index] = firstWeights[index];
+                    secondResult[index] = secondWeights[index];
+                    helper = false;
+                } else {
+                    firstResult[index] = secondWeights[index];
+                    secondResult[index] = firstWeights[index];
+                    helper = true;
+                }
+            }
+        }
+
+
+        return new NeuralLayer[]{
+                new NeuralLayer(neuronCount, previousNeuronCount, firstResult),
+                new NeuralLayer(neuronCount, previousNeuronCount, secondResult)};
     }
 
     public NeuralLayer(int neuronCount, int previousNeuronCount, double[][] weights) {
