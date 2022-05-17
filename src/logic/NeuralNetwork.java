@@ -7,7 +7,7 @@ public final class NeuralNetwork {
     private final int[] topology;
     private final NeuralLayer[] layers;
 
-    public static NeuralNetwork[] createFromTwoNetworks(NeuralNetwork firstNetwork, NeuralNetwork secondNetwork) {
+    public static NeuralNetwork[] createFromTwoNetworks(NeuralNetwork firstNetwork, NeuralNetwork secondNetwork, NeuralLayer.ReproductionMethods reproductionMethod) {
 
         if (firstNetwork.layers.length != secondNetwork.layers.length) {
             System.out.println("Neural Networks with different layers count!");
@@ -32,7 +32,7 @@ public final class NeuralNetwork {
                     secondNetwork.topology[layer - 1],
                     firstNetwork.layers[layer].getWeightsAsArray(),
                     secondNetwork.layers[layer].getWeightsAsArray(),
-                    NeuralLayer.ReproductionMethods.SIMPLE_DIVISION);
+                    reproductionMethod);
             firstLayers[layer] = helper[0];
             secondLayers[layer] = helper[1];
         }

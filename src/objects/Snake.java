@@ -5,6 +5,7 @@ import logic.NeuralNetwork;
 import java.awt.*;
 
 public final class Snake extends GameObject {
+
     public enum Direction {
         RIGHT, LEFT, UP, DOWN
     }
@@ -21,7 +22,8 @@ public final class Snake extends GameObject {
     private int tailSize;
 
     private final double[] senses = new double[4];
-    private NeuralNetwork brain = new NeuralNetwork(new int[]{senses.length, 8, 16, 4, 4});
+    private final int MAX_MOVEMENTS = 60;
+    private NeuralNetwork brain = new NeuralNetwork(new int[]{senses.length, 10, 16, 8, 4, 4});
 
     public Snake(int x, int y, Point foodPosition, Color color, int cellsCount) {
         super(x * STANDARD_SIZE, y * STANDARD_SIZE, color);
@@ -72,6 +74,8 @@ public final class Snake extends GameObject {
             double floatFoodX = (float) this.foodPosition.x / (positionLimit * STANDARD_SIZE);
             double floatFoodY = (float) this.foodPosition.y / (positionLimit * STANDARD_SIZE);
 
+            double floatDirectionChanges = (float) this.directionChanges / this.MAX_MOVEMENTS;
+
             double[] choose = this.brain.calculate(new double[]{floatX, floatY, floatFoodX, floatFoodY});
             setDirectionWithBrain(choose);
 
@@ -88,8 +92,8 @@ public final class Snake extends GameObject {
                 this.y -= this.height;
             }
 
-            if (this.directionChanges > 20) {
-                kill(0);
+            if (this.directionChanges > MAX_MOVEMENTS) {
+                kill(1);
                 return;
             }
         }
@@ -113,7 +117,6 @@ public final class Snake extends GameObject {
         }
     }
 
-
     @Override
     public void draw(Graphics g) {
         g.setColor(this.color);
@@ -136,6 +139,7 @@ public final class Snake extends GameObject {
         if (this.tail == null) {
             this.tail = new Snake(false, this.x, this.y, this.color);
             this.tailSize++;
+            this.directionChanges = 0;
         } else {
             this.tail.growTail();
         }
@@ -155,34 +159,34 @@ public final class Snake extends GameObject {
 
     private void setDirectionWithBrain(double[] decisions) {
         if (decisions.length != 4) {
-            System.out.println("Desicions are corrupted!");
+            System.out.println("Decisions are corrupted!");
             return;
         }
 
-        int bestDesicion = getBestDesicionIndex(decisions);
+        int bestDecision = getBestDecisionIndex(decisions);
 
-        if (bestDesicion == 0 && this.direction != Direction.UP) {
+        if (bestDecision == 0 && this.direction != Direction.UP) {
             this.directionChanges++;
             this.direction = Direction.UP;
         }
-        if (bestDesicion == 1 && this.direction != Direction.DOWN) {
+        if (bestDecision == 1 && this.direction != Direction.DOWN) {
             this.directionChanges++;
             this.direction = Direction.DOWN;
         }
-        if (bestDesicion == 2 && this.direction != Direction.LEFT) {
+        if (bestDecision == 2 && this.direction != Direction.LEFT) {
             this.directionChanges++;
             this.direction = Direction.LEFT;
         }
-        if (bestDesicion == 3 && this.direction != Direction.RIGHT) {
+        if (bestDecision == 3 && this.direction != Direction.RIGHT) {
             this.directionChanges++;
             this.direction = Direction.RIGHT;
         }
     }
 
-    public int getBestDesicionIndex(double[] desicions) {
+    public int getBestDecisionIndex(double[] decisions) {
         int index = 0;
-        for (int i = 1; i < desicions.length; i++) {
-            if (desicions[i] > desicions[index]) {
+        for (int i = 1; i < decisions.length; i++) {
+            if (decisions[i] > decisions[index]) {
                 index = i;
             }
         }

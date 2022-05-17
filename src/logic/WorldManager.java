@@ -30,18 +30,19 @@ public final class WorldManager {
     }
 
     public void tick() {
-        int worlsAlive = 0;
+        int worldsAlive = 0;
         for (World world : this.worlds) {
             if (world.isSnakeAlive()) {
-                worlsAlive++;
+                worldsAlive++;
                 world.tick();
             }
         }
 
-        if (worlsAlive == 0) {
+        if (worldsAlive == 0) {
             sortWorldsByScore();
             System.out.println(worlds[0].getScore());
             generateNewBestWorlds();
+            generation++;
         }
     }
 
@@ -77,7 +78,7 @@ public final class WorldManager {
             NeuralNetwork[] temporalBrains = NeuralNetwork.
                     createFromTwoNetworks(
                             worlds[index].getSnake().getBrain(),
-                            worlds[index + 1].getSnake().getBrain());
+                            worlds[index + 1].getSnake().getBrain(), NeuralLayer.ReproductionMethods.SIMPLE_DIVISION);
 
             newWorlds[index] = new World(cellsCount, temporalBrains[0], Color.red, Color.green);
             newWorlds[(index) + 1] = new World(cellsCount, temporalBrains[1], Color.red, Color.green);
