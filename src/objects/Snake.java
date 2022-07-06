@@ -66,7 +66,6 @@ public final class Snake extends GameObject {
         int lastX = this.x;
         int lastY = this.y;
 
-
         if (this.isHead) {
             double floatX = (float) x / (positionLimit * STANDARD_SIZE);
             double floatY = (float) y / (positionLimit * STANDARD_SIZE);
