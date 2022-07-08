@@ -63,12 +63,12 @@ public final class Snake extends GameObject {
 
     @Override
     public void tick() {
-        int lastX = this.x;
-        int lastY = this.y;
+        int lastX = this.position.x;
+        int lastY = this.position.y;
 
         if (this.isHead) {
-            double floatX = (float) x / (positionLimit * STANDARD_SIZE);
-            double floatY = (float) y / (positionLimit * STANDARD_SIZE);
+            double floatX = (float) this.position.x / (positionLimit * STANDARD_SIZE);
+            double floatY = (float) this.position.y / (positionLimit * STANDARD_SIZE);
 
             double floatFoodX = (float) this.foodPosition.x / (positionLimit * STANDARD_SIZE);
             double floatFoodY = (float) this.foodPosition.y / (positionLimit * STANDARD_SIZE);
@@ -79,16 +79,16 @@ public final class Snake extends GameObject {
             setDirectionWithBrain(choose);
 
             if (this.direction == Direction.RIGHT) {
-                this.x += this.width;
+                this.position.x += this.width;
             }
             if (this.direction == Direction.LEFT) {
-                this.x -= this.width;
+                this.position.x -= this.width;
             }
             if (this.direction == Direction.DOWN) {
-                this.y += this.height;
+                this.position.y += this.height;
             }
             if (this.direction == Direction.UP) {
-                this.y -= this.height;
+                this.position.y -= this.height;
             }
 
             if (this.directionChanges > MAX_MOVEMENTS) {
@@ -105,11 +105,11 @@ public final class Snake extends GameObject {
     }
 
     private void tick(int x, int y) {
-        int lastX = this.x;
-        int lastY = this.y;
+        int lastX = this.position.x;
+        int lastY = this.position.y;
 
-        this.x = x;
-        this.y = y;
+        this.position.x = x;
+        this.position.y = y;
 
         if (this.tail != null) {
             this.tail.tick(lastX, lastY);
@@ -120,7 +120,7 @@ public final class Snake extends GameObject {
     public void draw(Graphics g) {
         g.setColor(this.color);
 
-        g.fillRect(this.x, this.y, this.width, this.height);
+        g.fillRect(this.position.x, this.position.y, this.width, this.height);
 
         if (this.tail != null)
             tail.draw(g);
@@ -136,7 +136,7 @@ public final class Snake extends GameObject {
 
     public void growTail() {
         if (this.tail == null) {
-            this.tail = new Snake(false, this.x, this.y, this.color);
+            this.tail = new Snake(false, this.position.x, this.position.y, this.color);
             this.tailSize++;
             this.directionChanges = 0;
         } else {
@@ -145,7 +145,7 @@ public final class Snake extends GameObject {
     }
 
     private boolean outOfLimits() {
-        return (this.x < 0 || this.x > positionLimit * STANDARD_SIZE) || (this.y < 0 || this.y > positionLimit * STANDARD_SIZE);
+        return (this.position.x < 0 || this.position.x > positionLimit * STANDARD_SIZE) || (this.position.y < 0 || this.position.y > positionLimit * STANDARD_SIZE);
     }
 
     public boolean inCollisionWithTail(Snake head) {
