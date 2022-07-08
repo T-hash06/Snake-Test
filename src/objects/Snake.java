@@ -7,7 +7,7 @@ import java.awt.*;
 public final class Snake extends GameObject {
 
     public enum Direction {
-        RIGHT, LEFT, UP, DOWN
+        RIGHT, LEFT, UP, DOWN, UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT
     }
 
     private final boolean isHead;
@@ -21,9 +21,9 @@ public final class Snake extends GameObject {
     private double score;
     private int tailSize;
 
-    private final double[] senses = new double[4];
+    private final double[] senses = new double[8];
     private final int MAX_MOVEMENTS = 60;
-    private NeuralNetwork brain = new NeuralNetwork(new int[]{senses.length, 10, 16, 8, 4, 4});
+    private NeuralNetwork brain = new NeuralNetwork(new int[]{senses.length, 8, 16, 4});
 
     public Snake(int x, int y, Point foodPosition, Color color, int cellsCount) {
         super(x * STANDARD_SIZE, y * STANDARD_SIZE, color);
@@ -67,16 +67,27 @@ public final class Snake extends GameObject {
         int lastY = this.position.y;
 
         if (this.isHead) {
-            double floatX = (float) this.position.x / (positionLimit * STANDARD_SIZE);
-            double floatY = (float) this.position.y / (positionLimit * STANDARD_SIZE);
+            double[] visionInDirection = new double[2];
 
-            double floatFoodX = (float) this.foodPosition.x / (positionLimit * STANDARD_SIZE);
-            double floatFoodY = (float) this.foodPosition.y / (positionLimit * STANDARD_SIZE);
+            visionInDirection = lookInDirection(Direction.UP);
+            senses[0] = visionInDirection[0];
+            senses[1] = visionInDirection[1];
 
-            double floatDirectionChanges = (float) this.directionChanges / this.MAX_MOVEMENTS;
+            visionInDirection = lookInDirection(Direction.DOWN);
+            senses[2] = visionInDirection[0];
+            senses[3] = visionInDirection[1];
 
-            double[] choose = this.brain.calculate(new double[]{floatX, floatY, floatFoodX, floatFoodY});
+            visionInDirection = lookInDirection(Direction.RIGHT);
+            senses[4] = visionInDirection[0];
+            senses[5] = visionInDirection[1];
+
+            visionInDirection = lookInDirection(Direction.LEFT);
+            senses[6] = visionInDirection[0];
+            senses[7] = visionInDirection[1];
+
+            double[] choose = this.brain.calculate(senses);
             setDirectionWithBrain(choose);
+//            System.out.println(Arrays.toString(senses));
 
             if (this.direction == Direction.RIGHT) {
                 this.position.x += this.width;
@@ -135,10 +146,13 @@ public final class Snake extends GameObject {
     }
 
     public void growTail() {
-        if (this.tail == null) {
-            this.tail = new Snake(false, this.position.x, this.position.y, this.color);
+        if (this.isHead) {
             this.tailSize++;
             this.directionChanges = 0;
+        }
+
+        if (this.tail == null) {
+            this.tail = new Snake(false, this.position.x, this.position.y, this.color);
         } else {
             this.tail.growTail();
         }
@@ -199,7 +213,7 @@ public final class Snake extends GameObject {
 
     private void kill() {
         this.isAlive = false;
-        this.score = (0.5 * this.directionChanges * this.tailSize) + 0.25 * this.directionChanges;
+        this.score = (0.5 * this.directionChanges * this.tailSize);
     }
 
     private void kill(int forcedScore) {
@@ -213,5 +227,28 @@ public final class Snake extends GameObject {
 
     public NeuralNetwork getBrain() {
         return brain;
+    }
+
+    public double[] lookInDirection(Direction direction) {
+        double[] results = new double[3];
+        double distanceToWall = 0;
+
+
+        if (direction == Direction.LEFT)
+            distanceToWall = (float) this.position.x / (positionLimit * STANDARD_SIZE);
+
+        if (direction == Direction.RIGHT)
+            distanceToWall = 1 - ((float) this.position.x / (positionLimit * STANDARD_SIZE));
+
+        if (direction == Direction.UP)
+            distanceToWall = (float) this.position.y / (positionLimit * STANDARD_SIZE);
+
+        if (direction == Direction.DOWN) {
+            distanceToWall = 1 - ((float) this.position.y / (positionLimit * STANDARD_SIZE));
+        }
+
+        results[0] = distanceToObjectInDirection(direction, this.position, foodPosition) != -1 ? 1 : 0;
+        results[1] = distanceToWall;
+        return results;
     }
 }

@@ -78,7 +78,8 @@ public final class WorldManager {
             NeuralNetwork[] temporalBrains = NeuralNetwork.
                     createFromTwoNetworks(
                             worlds[index].getSnake().getBrain(),
-                            worlds[index + 1].getSnake().getBrain(), NeuralLayer.ReproductionMethods.SIMPLE_DIVISION);
+                            worlds[index + 1].getSnake().getBrain(),
+                            NeuralLayer.ReproductionMethods.SIMPLE_DIVISION);
 
             newWorlds[index] = new World(cellsCount, temporalBrains[0], Color.red, Color.green);
             newWorlds[(index) + 1] = new World(cellsCount, temporalBrains[1], Color.red, Color.green);
