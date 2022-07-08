@@ -1,6 +1,7 @@
 package logic;
 
 import java.util.Arrays;
+import java.util.Random;
 import java.util.function.Function;
 
 public final class NeuralLayer {
@@ -160,6 +161,15 @@ public final class NeuralLayer {
         }
 
         return values;
+    }
+
+    public void mutateWeights(double mutationRate) {
+        Random random = new Random();
+        for (int current = 0; current < this.neuronCount; current++) {
+            for (int previous = 0; previous < this.previousNeuronCount; previous++) {
+                this.weights[previous][current] = this.weights[previous][current] * (1 + (random.nextBoolean() ? +mutationRate : -mutationRate));
+            }
+        }
     }
 
     public double[][] getWeights() {

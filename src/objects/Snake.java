@@ -22,7 +22,7 @@ public final class Snake extends GameObject {
     private int tailSize;
 
     private final double[] senses = new double[8];
-    private final int MAX_MOVEMENTS = 60;
+    private final int MAX_MOVEMENTS = 100;
     private NeuralNetwork brain = new NeuralNetwork(new int[]{senses.length, 8, 16, 4});
 
     public Snake(int x, int y, Point foodPosition, Color color, int cellsCount) {
@@ -67,7 +67,7 @@ public final class Snake extends GameObject {
         int lastY = this.position.y;
 
         if (this.isHead) {
-            double[] visionInDirection = new double[2];
+            double[] visionInDirection;
 
             visionInDirection = lookInDirection(Direction.UP);
             senses[0] = visionInDirection[0];
@@ -87,7 +87,6 @@ public final class Snake extends GameObject {
 
             double[] choose = this.brain.calculate(senses);
             setDirectionWithBrain(choose);
-//            System.out.println(Arrays.toString(senses));
 
             if (this.direction == Direction.RIGHT) {
                 this.position.x += this.width;
@@ -103,7 +102,7 @@ public final class Snake extends GameObject {
             }
 
             if (this.directionChanges > MAX_MOVEMENTS) {
-                kill(1);
+                kill();
                 return;
             }
         }
@@ -216,7 +215,7 @@ public final class Snake extends GameObject {
         this.score = (0.5 * this.directionChanges * this.tailSize);
     }
 
-    private void kill(int forcedScore) {
+    private void kill(double forcedScore) {
         this.isAlive = false;
         this.score = forcedScore;
     }

@@ -12,6 +12,7 @@ public final class WorldManager {
     private final int worldCount;
     private int generation;
     private final int cellsCount;
+    private final double MUTATION_RATE = 0.05;
 
     //TODO: Variable snake color
     //TODO: Odd worlds count support
@@ -77,9 +78,12 @@ public final class WorldManager {
         for (int index = 0; index < worldCount; index += 2) {
             NeuralNetwork[] temporalBrains = NeuralNetwork.
                     createFromTwoNetworks(
-                            worlds[index].getSnake().getBrain(),
+                            worlds[index % 100].getSnake().getBrain(),
                             worlds[index + 1].getSnake().getBrain(),
                             NeuralLayer.ReproductionMethods.SIMPLE_DIVISION);
+
+            temporalBrains[0].mutateLayers(MUTATION_RATE);
+            temporalBrains[1].mutateLayers(MUTATION_RATE);
 
             newWorlds[index] = new World(cellsCount, temporalBrains[0], Color.red, Color.green);
             newWorlds[(index) + 1] = new World(cellsCount, temporalBrains[1], Color.red, Color.green);

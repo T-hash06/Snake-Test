@@ -96,4 +96,10 @@ public final class NeuralNetwork {
             this.layers[index] = new NeuralLayer(topology[index], topology[index - 1]);
         }
     }
+
+    public void mutateLayers(double mutationRate) {
+        for (int index = 0; index < this.topology.length; index++) {
+            this.layers[index].mutateWeights(mutationRate);
+        }
+    }
 }
